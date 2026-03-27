@@ -1,0 +1,14 @@
+<svg width="96" height="80" viewBox="0 0 96 80" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M48 10 C65 10 78 22 78 37 C78 52 65 64 48 64 C31 64 18 52 18 37 C18 23 30 11 47 10" stroke="#1a1a1a" stroke-width="1.8" fill="none"/>
+  <path d="M48 18 C59 18 68 27 68 37 C68 47 59 56 48 56 C37 56 28 47 28 37 C28 27 37 18 48 18" stroke="#1a1a1a" stroke-width="1.4" fill="none" stroke-dasharray="52 6" stroke-dashoffset="10"/>
+  <line x1="17" y1="10" x2="17" y2="22" stroke="#1a1a1a" stroke-width="1.5"/>
+  <line x1="21" y1="10" x2="21" y2="22" stroke="#1a1a1a" stroke-width="1.5"/>
+  <line x1="25" y1="10" x2="25" y2="22" stroke="#1a1a1a" stroke-width="1.5"/>
+  <path d="M17 22 Q21 27 25 22" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+  <path d="M21 27 C21 35 20 45 20 55" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+  <path d="M20 55 C19 58 19 62 20 65 C21 68 22 68 21 65" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+  <path d="M75 10 C80 12 81 20 78 26 L75 28" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+  <line x1="75" y1="28" x2="75" y2="55" stroke="#1a1a1a" stroke-width="1.5"/>
+  <path d="M75 55 C74 58 74 62 75 65 C76 68 77 68 76 65" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+  <path d="M8 72 C18 70 28 73 38 71 C48 69 58 72 68 71 C78 70 86 72 90 71" stroke="#1a1a1a" stroke-width="1.4" fill="none"/>
+</svg>
