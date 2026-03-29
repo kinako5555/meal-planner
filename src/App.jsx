@@ -314,20 +314,37 @@ export default function App() {
       <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&display=swap" rel="stylesheet"/>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0;}
+        html,body{overflow-x:hidden;width:100%;}
         body,input,textarea,button{font-family:'M PLUS Rounded 1c',sans-serif!important;}
         .btn,.tab-btn,.day-cell,.recipe-card{cursor:pointer;transition:all 0.18s;border:none;}
         .btn:hover,.tab-btn:hover{opacity:0.82;transform:translateY(-1px);}
         .btn:active{transform:translateY(0);}
-        .day-cell:hover{transform:scale(1.03);box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:10;position:relative;}
+        .day-cell:hover{box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:10;position:relative;}
         .recipe-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08);}
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px;}
-        .modal{background:white;border-radius:20px;padding:28px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;padding:12px;}
+        .modal{background:white;border-radius:20px;padding:24px 20px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;}
         input,textarea{font-family:inherit;}
         .checked-item{opacity:0.4;text-decoration:line-through;}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
         .pulsing{animation:pulse 1s infinite;}
         .delete-btn{opacity:0;transition:opacity 0.15s;}
         .shop-row:hover .delete-btn{opacity:1;}
+        .cal-header{display:grid;grid-template-columns:repeat(7,1fr);width:100%;}
+        .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#ECECEA;width:100%;}
+        .cal-cell{background:white;padding:4px 3px;display:flex;flex-direction:column;gap:2px;overflow:hidden;min-height:52px;}
+        @media(min-width:480px){.cal-cell{min-height:68px;padding:6px;gap:3px;}}
+        @media(min-width:640px){.cal-cell{min-height:80px;padding:8px;gap:4px;}}
+        .cal-day-num{font-size:11px;font-weight:400;display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;flex-shrink:0;}
+        @media(min-width:480px){.cal-day-num{font-size:13px;width:22px;height:22px;}}
+        .cal-badge{font-size:8px;padding:1px 3px;border-radius:4px;color:white;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
+        @media(min-width:480px){.cal-badge{font-size:9px;padding:1px 5px;border-radius:6px;}}
+        .cal-meal{font-size:8px;color:#555;background:#F5F5F3;border-radius:3px;padding:1px 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        @media(min-width:480px){.cal-meal{font-size:9px;padding:2px 5px;border-radius:4px;}}
+        @media(max-width:400px){
+          .header-inner{flex-direction:column;align-items:flex-start!important;gap:8px!important;}
+          .header-right{width:100%;align-items:flex-start!important;}
+          .header-tabs{justify-content:flex-start!important;}
+        }
       `}</style>
 
       {/* ── Header ── */}
@@ -439,31 +456,31 @@ export default function App() {
             })()}
 
             {/* Calendar grid */}
-            <div style={{ background:"white", borderRadius:20, overflow:"hidden", boxShadow:"0 2px 20px rgba(0,0,0,0.06)" }}>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", background:"#F7F7F5" }}>
-                {DAYS_JP.map((d,i)=><div key={d} style={{ textAlign:"center", padding:"10px 4px", fontSize:11, fontWeight:600, color:i===0?"#FF6B6B":i===6?"#4ECDC4":"#888" }}>{d}</div>)}
+            <div style={{ borderRadius:20, overflow:"hidden", boxShadow:"0 2px 20px rgba(0,0,0,0.06)" }}>
+              <div className="cal-header" style={{ background:"#F7F7F5" }}>
+                {DAYS_JP.map((d,i)=>(
+                  <div key={d} style={{ textAlign:"center", padding:"8px 2px", fontSize:10, fontWeight:600, color:i===0?"#FF6B6B":i===6?"#4ECDC4":"#888" }}>{d}</div>
+                ))}
               </div>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:1, background:"#ECECEA" }}>
-                {Array(firstDay).fill(null).map((_,i)=><div key={`e${i}`} style={{ background:"#FAFAF8", minHeight:80 }}/>)}
+              <div className="cal-grid">
+                {Array(firstDay).fill(null).map((_,i)=><div key={`e${i}`} className="cal-cell" style={{ background:"#FAFAF8" }}/>)}
                 {Array(daysCount).fill(null).map((_,i)=>{
                   const d=i+1; const dd=days[d]||{};
                   const dow=new Date(currentYear,currentMonth,d).getDay();
                   const isToday=d===today.getDate()&&currentMonth===today.getMonth()&&currentYear===today.getFullYear();
                   const mi=members.indexOf(dd.cook);
                   const color=mi>=0?colors[mi]:null;
-                  const shortName=dd.cook?(dd.cook.length>3?dd.cook.slice(0,3):dd.cook):"";
+                  const shortName=dd.cook?(dd.cook.length>2?dd.cook.slice(0,2):dd.cook):"";
                   return (
-                    <div key={d} className="day-cell" onClick={()=>setEditModal(d)}
-                      style={{ background:"white", minHeight:80, padding:8, display:"flex", flexDirection:"column", gap:4 }}>
+                    <div key={d} className="cal-cell day-cell" onClick={()=>setEditModal(d)}>
                       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                        <span style={{ fontSize:13, fontWeight:isToday?700:400,
+                        <span className="cal-day-num" style={{
+                          fontWeight:isToday?700:400,
                           color:isToday?"white":dow===0?"#FF6B6B":dow===6?"#4ECDC4":"#1a1a1a",
-                          background:isToday?"#1a1a1a":"transparent",
-                          width:isToday?22:"auto", height:isToday?22:"auto",
-                          borderRadius:isToday?"50%":0, display:"flex", alignItems:"center", justifyContent:"center" }}>{d}</span>
-                        {color&&<span style={{ fontSize:9, background:color, color:"white", borderRadius:6, padding:"1px 5px", fontWeight:600, maxWidth:30, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{shortName}</span>}
+                          background:isToday?"#1a1a1a":"transparent" }}>{d}</span>
+                        {color&&<span className="cal-badge" style={{ background:color }}>{shortName}</span>}
                       </div>
-                      {dd.meal&&<div style={{ fontSize:9, color:"#555", background:"#F5F5F3", borderRadius:4, padding:"2px 5px", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{dd.meal}</div>}
+                      {dd.meal&&<div className="cal-meal">{dd.meal}</div>}
                     </div>
                   );
                 })}
