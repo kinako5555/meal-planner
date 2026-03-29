@@ -213,8 +213,8 @@ export default function App() {
         if (data.colors)       setColors(data.colors);
         setLastSynced(new Date());
       }
-      if (isInit) setSyncStatus("idle");
-    } catch { if (isInit) setSyncStatus("idle"); }
+      if (isInit) setSyncStatus("loaded");
+    } catch { if (isInit) setSyncStatus("loaded"); }
   }, []);
 
   useEffect(() => {
@@ -247,12 +247,15 @@ export default function App() {
   // ── Month init ────────────────────────────────────────────────────
   const monthKey = `${currentYear}-${currentMonth}`;
   useEffect(() => {
-    if (!session?.path || syncStatus==="loading") return;
+    // "loaded" になってから初めて月初期化を実行（Firebaseデータ取得後のみ）
+    if (!session?.path || syncStatus !== "loaded") return;
     if (!calendarData[monthKey]) {
       const count = getDaysInMonth(currentYear, currentMonth);
       const newDays = {};
       for (let d=1; d<=count; d++) newDays[d] = { cook:members[0], meal:"", note:"" };
       setCalendarData(prev => {
+        // 再チェック：他の処理でデータが入っていたら初期化しない
+        if (prev[monthKey]) return prev;
         const next = {...prev, [monthKey]:newDays};
         persist(next, recipes, shoppingList, members, colors, session.path);
         return next;
@@ -301,6 +304,7 @@ export default function App() {
     : syncStatus==="saved"   ? "✅ 保存完了"
     : syncStatus==="error"   ? "❌ エラー"
     : lastSynced ? `🔄 ${lastSynced.getHours()}:${String(lastSynced.getMinutes()).padStart(2,"0")} 同期済み`
+    : syncStatus==="loaded"  ? "🔄 同期済み"
     : "待機中";
 
   // ── Render ────────────────────────────────────────────────────────
