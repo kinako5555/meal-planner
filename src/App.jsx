@@ -32,7 +32,7 @@ const COLOR_PRESETS   = [
   "#FF6B6B","#FF9F43","#F9CA24","#6AB04C","#4ECDC4","#45AAF2","#A29BFE","#FD79A8",
   "#E17055","#00B894","#0984E3","#6C5CE7","#FDCB6E","#74B9FF","#55EFC4","#E84393",
 ];
-const DAYS_JP    = ["日","月","火","水","木","金","土"];
+const DAYS_JP    = ["月","火","水","木","金","土","日"];
 const MONTHS_JP  = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
 const SAMPLE_MEALS = ["親子丼","肉じゃが","唐揚げ","野菜炒め","カレーライス","焼き魚","パスタ","餃子","味噌汁定食","豚の生姜焼き","オムライス","シチュー","天ぷら","鍋料理","ハンバーグ"];
 const DEFAULT_RECIPES = [
@@ -44,7 +44,7 @@ const POLL_MS     = 6000;
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 function getDaysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
-function getFirstDay(y,m)   { return new Date(y,m,1).getDay(); }
+function getFirstDay(y,m)   { const d=new Date(y,m,1).getDay(); return d===0?6:d-1; }
 function hexToRgb(hex){ const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return {r,g,b}; }
 function lighten(hex,amt=0.88){ const {r,g,b}=hexToRgb(hex); return `rgb(${Math.round(r+(255-r)*amt)},${Math.round(g+(255-g)*amt)},${Math.round(b+(255-b)*amt)})`; }
 function darken(hex,amt=0.25){ const {r,g,b}=hexToRgb(hex); return `rgb(${Math.round(r*(1-amt))},${Math.round(g*(1-amt))},${Math.round(b*(1-amt))})`; }
@@ -463,7 +463,7 @@ export default function App() {
             <div style={{ borderRadius:20, overflow:"hidden", boxShadow:"0 2px 20px rgba(0,0,0,0.06)" }}>
               <div className="cal-header" style={{ background:"#F7F7F5" }}>
                 {DAYS_JP.map((d,i)=>(
-                  <div key={d} style={{ textAlign:"center", padding:"8px 2px", fontSize:10, fontWeight:600, color:i===0?"#FF6B6B":i===6?"#4ECDC4":"#888" }}>{d}</div>
+                  <div key={d} style={{ textAlign:"center", padding:"8px 2px", fontSize:10, fontWeight:600, color:i===6?"#FF6B6B":i===5?"#4ECDC4":"#888" }}>{d}</div>
                 ))}
               </div>
               <div className="cal-grid">
