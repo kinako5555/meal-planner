@@ -44,6 +44,28 @@ const POLL_MS     = 6000;
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 function getDaysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
+
+// メモ内のURLをリンクに変換して表示するコンポーネント
+function NoteWithLinks({ text, style }) {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/[^\s\u3000\u3001\u3002\uff01\uff09\u300d]+)/g;
+  const parts = text.split(urlRegex);
+  return (
+    <div style={style}>
+      {parts.map((part, i) =>
+        urlRegex.test(part) ? (
+          <a key={i} href={part} target="_blank" rel="noopener noreferrer"
+            style={{ color:"#0984E3", textDecoration:"underline", wordBreak:"break-all" }}
+            onClick={e=>e.stopPropagation()}>
+            {part}
+          </a>
+        ) : (
+          <span key={i} style={{ whiteSpace:"pre-wrap" }}>{part}</span>
+        )
+      )}
+    </div>
+  );
+}
 function getFirstDay(y,m)   { const d=new Date(y,m,1).getDay(); return d===0?6:d-1; }
 function hexToRgb(hex){ const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return {r,g,b}; }
 function lighten(hex,amt=0.88){ const {r,g,b}=hexToRgb(hex); return `rgb(${Math.round(r+(255-r)*amt)},${Math.round(g+(255-g)*amt)},${Math.round(b+(255-b)*amt)})`; }
@@ -631,8 +653,12 @@ export default function App() {
             </div>
             <div style={{ marginBottom:20 }}>
               <label style={{ fontSize:12, fontWeight:600, color:"#888", display:"block", marginBottom:8 }}>📝 メモ</label>
-              <textarea value={days[editModal].note||""} onChange={e=>updateDay(editModal,"note",e.target.value)} placeholder="メモ..." rows={2}
+              <textarea value={days[editModal].note||""} onChange={e=>updateDay(editModal,"note",e.target.value)} placeholder="メモ（URLを貼るとリンクになります）..." rows={2}
                 style={{ width:"100%", padding:"12px 14px", borderRadius:10, border:"1px solid #E0E0E0", fontSize:14, outline:"none", background:"#FAFAF8", resize:"none" }}/>
+              {days[editModal].note && (
+                <NoteWithLinks text={days[editModal].note}
+                  style={{ marginTop:8, fontSize:13, color:"#555", background:"#F7F7F5", borderRadius:10, padding:"10px 12px", lineHeight:1.7 }} />
+              )}
             </div>
             <button className="btn" onClick={()=>setEditModal(null)} style={{ width:"100%", padding:"14px", borderRadius:12, background:"#1a1a1a", color:"white", fontSize:14, fontWeight:600 }}>保存して閉じる</button>
           </div>
