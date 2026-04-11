@@ -45,6 +45,9 @@ const POLL_MS     = 6000;
 // ─── Helpers ─────────────────────────────────────────────────────────
 function getDaysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
 
+// getDay()をDAYS_JP(月曜始まり)のインデックスに変換
+function dayIdx(date){ return (date.getDay()+6)%7; }
+
 // メモ内のURLをリンクに変換して表示するコンポーネント
 function NoteWithLinks({ text, style }) {
   if (!text) return null;
@@ -452,7 +455,7 @@ export default function App() {
                         <div style={{ background:cookIdx>=0?lighten(cookColor,0.9):"#F5F5F3", padding:"14px 16px", borderTop:`4px solid ${cookColor}` }}>
                           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
                             <div style={{ fontSize:10, fontWeight:700, color:cookIdx>=0?darken(cookColor):"#AAA", letterSpacing:1.5, textTransform:"uppercase" }}>{slot.label}</div>
-                            <div style={{ fontSize:10, color:"#AAA" }}>{slot.m+1}/{slot.d}（{DAYS_JP[slot.date.getDay()]}）</div>
+                            <div style={{ fontSize:10, color:"#AAA" }}>{slot.m+1}/{slot.d}（{DAYS_JP[dayIdx(slot.date)]}）</div>
                           </div>
                           {cookName ? (
                             <>
@@ -626,7 +629,7 @@ export default function App() {
         <div className="modal-overlay" onClick={()=>setEditModal(null)}>
           <div className="modal" onClick={e=>e.stopPropagation()}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
-              <h3 style={{ fontSize:20, fontWeight:700 }}>{currentMonth+1}月{editModal}日 ({DAYS_JP[new Date(currentYear,currentMonth,editModal).getDay()]})</h3>
+              <h3 style={{ fontSize:20, fontWeight:700 }}>{currentMonth+1}月{editModal}日 ({DAYS_JP[dayIdx(new Date(currentYear,currentMonth,editModal))]})</h3>
               <button className="btn" onClick={()=>setEditModal(null)} style={{ width:32, height:32, borderRadius:"50%", background:"#F0F0EE", fontSize:16, color:"#666" }}>✕</button>
             </div>
             <div style={{ marginBottom:16 }}>
