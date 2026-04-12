@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+           import { useState, useEffect, useCallback, useRef } from "react";
 
 // ─── Firebase config ─────────────────────────────────────────────────
 const FIREBASE_CONFIG = {
@@ -551,11 +551,11 @@ export default function App() {
               <button className="btn" onClick={()=>saveShopping(shoppingList.map(i=>({...i,checked:false})))}
                 style={{ padding:"8px 14px", borderRadius:20, background:"#F0F0EE", color:"#555", fontSize:12, fontWeight:500 }}>チェックをリセット</button>
             </div>
-            <div style={{ display:"flex", gap:8, marginBottom:16, width:"100%", overflow:"hidden" }}>
+            <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
               <input value={newItem} onChange={e=>setNewItem(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addItem()} placeholder="アイテムを手入力…"
-                style={{ flex:"1 1 0", minWidth:0, padding:"12px 14px", borderRadius:12, border:"1.5px solid #E0E0E0", fontSize:14, outline:"none", background:"white", boxSizing:"border-box" }}
+                style={{ width:"100%", padding:"12px 14px", borderRadius:12, border:"1.5px solid #E0E0E0", fontSize:14, outline:"none", background:"white", boxSizing:"border-box" }}
                 onFocus={e=>e.target.style.borderColor="#1a1a1a"} onBlur={e=>e.target.style.borderColor="#E0E0E0"} />
-              <button className="btn" onClick={addItem} style={{ flex:"0 0 auto", padding:"12px 16px", borderRadius:12, background:"#1a1a1a", color:"white", fontSize:13, fontWeight:600, whiteSpace:"nowrap" }}>＋ 追加</button>
+              <button className="btn" onClick={addItem} style={{ width:"100%", padding:"12px", borderRadius:12, background:"#1a1a1a", color:"white", fontSize:13, fontWeight:600 }}>＋ 追加</button>
             </div>
             {shoppingList.length===0 ? (
               <div style={{ textAlign:"center", padding:"40px 20px", color:"#AAA" }}>
