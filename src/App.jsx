@@ -1,9 +1,9 @@
-           import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 // ─── Firebase config ─────────────────────────────────────────────────
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyD8wLlu3El3jkHQFBciNvfOJgx2i68sMx0",
-  databaseURL: "https://mealplanner-64d08-default-rtdb.asia-southeast1.firebasedatabase.app",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
 };
 
 // Lightweight Firebase REST helper (no SDK needed)
