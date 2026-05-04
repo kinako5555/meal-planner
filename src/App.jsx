@@ -41,6 +41,7 @@ const DEFAULT_RECIPES = [
 ];
 const SESSION_KEY = "meal-planner-session-v2";
 const POLL_MS     = 6000;
+const DEBOUNCE_MS = 300;
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 function getDaysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
@@ -197,7 +198,8 @@ export default function App() {
   const [newItem,      setNewItem]      = useState("");
   const [syncStatus,   setSyncStatus]   = useState("idle");
   const [lastSynced,   setLastSynced]   = useState(null);
-  const pendingRef = useRef(null); // debounce timer
+  const pendingRef  = useRef(null);  // debounce timer
+  const isSavingRef = useRef(false);  // 保存中フラグ
 
   // ── Session restore ───────────────────────────────────────────────
   useEffect(() => {
@@ -216,18 +218,22 @@ export default function App() {
     if (pendingRef.current) clearTimeout(pendingRef.current);
     setSyncStatus("saving");
     pendingRef.current = setTimeout(async () => {
+      isSavingRef.current = true;
       try {
         await fbSet(path, { calendarData:cal, recipes:rec, shoppingList:shop, members:mem, colors:cols });
         setSyncStatus("saved");
         setLastSynced(new Date());
         setTimeout(()=>setSyncStatus("idle"), 2000);
       } catch { setSyncStatus("error"); }
-    }, 600);
+      finally { isSavingRef.current = false; }
+    }, 300);
   }, []);
 
   // ── Firebase load ─────────────────────────────────────────────────
   const loadData = useCallback(async (path, isInit=false) => {
     if (!path) return;
+    // 保存中は読み込みをスキップ（上書き防止）
+    if (!isInit && isSavingRef.current) return;
     try {
       const data = await fbGet(path);
       if (data) {
